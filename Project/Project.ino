@@ -35,7 +35,7 @@ OperationMode mode = AUTOMATIC;
 void setup() {
   Serial.begin(SERIAL_SPEED);
 
-  While(!Serial);
+  while (!Serial);
 
   pinMode(LEDR, OUTPUT);
   pinMode(LEDG, OUTPUT);
@@ -95,8 +95,28 @@ void loop() {
 
     // **** Start BLE logic
 
+    while (central.connected()) {
+      if (switchCharacteristic.written()) {
+        switch(switchCharacteristic.value()) {
+          // case 1 (open), case 2 (close), default
+          case 01:
+            openBlinds();
+            break;
+          case 02:
+            closeBlinds();
+            break;
+          default:
+            Serial.println("Ignored input.");
+            break;
+        }
+      }
+    }
 
     // **** On Disconnection
+
+    Serial.println("Disconnected...");
+    digitalWrite(LED, LOW);
+
     mode = AUTOMATIC;
   }
 
@@ -104,7 +124,7 @@ void loop() {
     Serial.println("Running in Automatic control mode");
 
     switch(currentState) {
-      case BLINDS_CLOSE:
+      case BLINDS_CLOSED:
         Serial.println("Blinds are currently closed");
         break;
       case BLINDS_OPEN:
@@ -115,4 +135,14 @@ void loop() {
   }
 
   delay(1000);
+}
+
+void openBlinds() {
+  Serial.println("Opening Blinds....");
+  currentState = BLINDS_OPEN;
+}
+
+void closeBlinds() {
+  Serial.println("Closing Blinds....");
+  currentState = BLINDS_CLOSED;
 }
