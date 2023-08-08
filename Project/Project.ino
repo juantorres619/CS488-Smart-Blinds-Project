@@ -133,6 +133,23 @@ void loop() {
     }
 
   }
+  //getting temp from sensor
+  float temperature = BARO.readTemperature();
+
+  //converting temp to fahrenheit
+  temperature = (temperature * 9/5) + 32;
+
+  Serial.print("Temperature = ");
+  Serial.print(temperature);
+  Serial.println("°F");
+  // print an empty line
+  Serial.println();
+
+  //closing blinds if temp is above 80
+  if(temperature > 80 && currentState == BLINDS_OPEN){
+    closeBlinds();
+    Serial.println("Temperature above 80°F, closing blinds");
+  }
 
   delay(1000);
 }
