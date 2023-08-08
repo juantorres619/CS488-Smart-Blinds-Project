@@ -128,7 +128,13 @@ void loop() {
         Serial.println("Blinds are currently closed");
         break;
       case BLINDS_OPEN:
-        Serial.println("BLinds are currently open");
+        Serial.println("Blinds are currently open");
+        
+        //closing blinds if temp is above 80
+        if(temperature > 80){
+        closeBlinds();
+        Serial.println("Temperature above 80°F, closing blinds");
+        }
         break;
     }
 
@@ -144,12 +150,6 @@ void loop() {
   Serial.println("°F");
   // print an empty line
   Serial.println();
-
-  //closing blinds if temp is above 80
-  if(temperature > 80 && currentState == BLINDS_OPEN){
-    closeBlinds();
-    Serial.println("Temperature above 80°F, closing blinds");
-  }
 
   delay(1000);
 }
